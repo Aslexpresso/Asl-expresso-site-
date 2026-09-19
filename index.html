@@ -601,8 +601,8 @@ alt="Barra Grande Piauí">
 </p>
 
 <a class="btn wa"
-href="https://wa.me/5599984690434?text=Olá!%20Quero%20reservar%20Barra%20Grande.">
-
+="https://wa.me/5599984690434?text=Olá!%20Quero%20reservar%20Barra%20Grande.">
+href="javascript:void(0)" onclick="abrirReserva()"
 Reservar agora
 
 </a>
@@ -994,7 +994,341 @@ href="https://wa.me/5599984690434?text=Olá%20ASL%20Expresso!">
 
 💬
 
-</a>
+</a<!-- ===== SISTEMA DE ESCOLHA DE POLTRONAS ASL EXPRESSO ===== -->
+
+<style>
+#aslReserva{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.88);
+  z-index:99999;
+  overflow-y:auto;
+  padding:20px;
+}
+
+.asl-reserva-box{
+  max-width:520px;
+  margin:20px auto;
+  background:#fff;
+  border-radius:24px;
+  padding:22px;
+  color:#0b2545;
+  box-shadow:0 20px 60px rgba(0,0,0,.4);
+}
+
+.asl-reserva-topo{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:15px;
+}
+
+.asl-reserva-topo h2{
+  margin:0;
+  font-size:25px;
+}
+
+.asl-fechar{
+  width:42px;
+  height:42px;
+  border:0;
+  border-radius:50%;
+  background:#eee;
+  font-size:22px;
+  cursor:pointer;
+}
+
+.asl-reserva-box label{
+  display:block;
+  font-weight:bold;
+  margin-top:13px;
+  margin-bottom:5px;
+}
+
+.asl-reserva-box input,
+.asl-reserva-box select{
+  width:100%;
+  padding:14px;
+  border:1px solid #ccd5df;
+  border-radius:12px;
+  font-size:16px;
+  background:#fff;
+}
+
+.asl-titulo-poltrona{
+  text-align:center;
+  margin:25px 0 8px;
+}
+
+.asl-legenda{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  flex-wrap:wrap;
+  font-size:13px;
+  margin-bottom:15px;
+}
+
+.asl-onibus{
+  max-width:330px;
+  margin:auto;
+  padding:18px;
+  border:3px solid #0b2545;
+  border-radius:35px 35px 18px 18px;
+  background:#eef5fb;
+}
+
+.asl-motorista{
+  text-align:right;
+  padding:8px;
+  margin-bottom:15px;
+  font-size:14px;
+  font-weight:bold;
+}
+
+.asl-fileira{
+  display:grid;
+  grid-template-columns:1fr 1fr 28px 1fr 1fr;
+  gap:7px;
+  margin-bottom:8px;
+}
+
+.poltrona{
+  border:0;
+  border-radius:9px;
+  padding:11px 3px;
+  font-weight:bold;
+  background:#21c76a;
+  color:#fff;
+  cursor:pointer;
+}
+
+.poltrona.selecionada{
+  background:#1479e8;
+  transform:scale(1.06);
+}
+
+.poltrona.ocupada{
+  background:#e53935;
+  cursor:not-allowed;
+  opacity:.75;
+}
+
+.corredor{
+  width:28px;
+}
+
+#aslPoltronaEscolhida{
+  text-align:center;
+  font-weight:bold;
+  margin:15px 0;
+  font-size:18px;
+}
+
+.asl-confirmar{
+  width:100%;
+  border:0;
+  border-radius:14px;
+  padding:16px;
+  background:#0b69c7;
+  color:white;
+  font-size:17px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.asl-botao-reservar{
+  display:block;
+  width:100%;
+  max-width:520px;
+  margin:18px auto;
+  padding:17px;
+  border:0;
+  border-radius:15px;
+  background:#0b69c7;
+  color:white;
+  font-size:18px;
+  font-weight:bold;
+  cursor:pointer;
+}
+</style>
+
+<div id="aslReserva">
+  <div class="asl-reserva-box">
+
+    <div class="asl-reserva-topo">
+      <h2>🚌 Reserve sua viagem</h2>
+      <button class="asl-fechar" onclick="fecharReserva()">✕</button>
+    </div>
+
+    <label>Nome completo</label>
+    <input id="aslNome" type="text" placeholder="Digite seu nome">
+
+    <label>CPF</label>
+    <input id="aslCpf" type="text" placeholder="000.000.000-00">
+
+    <label>WhatsApp</label>
+    <input id="aslTelefone" type="tel" placeholder="(99) 99999-9999">
+
+    <label>Cidade de embarque</label>
+    <select id="aslEmbarque">
+      <option value="">Selecione</option>
+      <option>Codó</option>
+      <option>Caxias</option>
+      <option>Timon</option>
+      <option>Teresina</option>
+    </select>
+
+    <h3 class="asl-titulo-poltrona">Escolha sua poltrona 💺</h3>
+
+    <div class="asl-legenda">
+      <span>🟢 Disponível</span>
+      <span>🔵 Selecionada</span>
+      <span>🔴 Ocupada</span>
+    </div>
+
+    <div class="asl-onibus">
+      <div class="asl-motorista">🚍 Motorista</div>
+      <div id="aslMapaPoltronas"></div>
+    </div>
+
+    <div id="aslPoltronaEscolhida">
+      Nenhuma poltrona selecionada
+    </div>
+
+    <button class="asl-confirmar" onclick="confirmarReserva()">
+      Confirmar reserva pelo WhatsApp
+    </button>
+
+  </div>
+</div>
+
+<script>
+let aslPoltrona = null;
+
+/* Exemplo:
+   coloque aqui números de poltronas que já estão ocupadas.
+   Depois vamos ligar isso ao banco de dados. */
+const aslOcupadas = [];
+
+function criarPoltronas(){
+
+  const mapa = document.getElementById("aslMapaPoltronas");
+
+  if(!mapa) return;
+
+  mapa.innerHTML = "";
+
+  let numero = 1;
+
+  for(let linha = 0; linha < 12; linha++){
+
+    const fileira = document.createElement("div");
+    fileira.className = "asl-fileira";
+
+    for(let pos = 0; pos < 5; pos++){
+
+      if(pos === 2){
+        const corredor = document.createElement("div");
+        corredor.className = "corredor";
+        fileira.appendChild(corredor);
+        continue;
+      }
+
+      if(numero > 48) break;
+
+      const n = numero;
+
+      const botao = document.createElement("button");
+      botao.type = "button";
+      botao.className = "poltrona";
+      botao.textContent = String(n).padStart(2,"0");
+
+      if(aslOcupadas.includes(n)){
+        botao.classList.add("ocupada");
+        botao.disabled = true;
+      }else{
+        botao.onclick = function(){
+          selecionarPoltrona(n,botao);
+        };
+      }
+
+      fileira.appendChild(botao);
+      numero++;
+    }
+
+    mapa.appendChild(fileira);
+  }
+}
+
+function selecionarPoltrona(numero,botao){
+
+  document.querySelectorAll(".poltrona")
+    .forEach(p => p.classList.remove("selecionada"));
+
+  botao.classList.add("selecionada");
+
+  aslPoltrona = numero;
+
+  document.getElementById("aslPoltronaEscolhida").innerHTML =
+    "💺 Poltrona escolhida: <strong>" +
+    String(numero).padStart(2,"0") +
+    "</strong>";
+}
+
+function abrirReserva(){
+  document.getElementById("aslReserva").style.display="block";
+  document.body.style.overflow="hidden";
+  criarPoltronas();
+}
+
+function fecharReserva(){
+  document.getElementById("aslReserva").style.display="none";
+  document.body.style.overflow="";
+}
+
+function confirmarReserva(){
+
+  const nome = document.getElementById("aslNome").value.trim();
+  const cpf = document.getElementById("aslCpf").value.trim();
+  const telefone = document.getElementById("aslTelefone").value.trim();
+  const embarque = document.getElementById("aslEmbarque").value;
+
+  if(!nome || !cpf || !telefone || !embarque){
+    alert("Preencha todos os dados para continuar.");
+    return;
+  }
+
+  if(!aslPoltrona){
+    alert("Escolha sua poltrona.");
+    return;
+  }
+
+  const mensagem =
+`Olá, ASL Expresso! 🚌
+
+Quero solicitar minha reserva.
+
+👤 Passageiro: ${nome}
+🪪 CPF: ${cpf}
+📱 Telefone: ${telefone}
+📍 Embarque: ${embarque}
+💺 Poltrona: ${String(aslPoltrona).padStart(2,"0")}
+
+Aguardo a confirmação da minha reserva.`;
+
+  const url =
+    "https://wa.me/5599984690434?text=" +
+    encodeURIComponent(mensagem);
+
+  window.open(url,"_blank");
+}
+
+document.addEventListener("DOMContentLoaded", criarPoltronas);
+</script>
+
+<!-- ===== FIM SISTEMA DE POLTRONAS ===== -->>
 
 </body>
 </html>
