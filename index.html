@@ -1192,7 +1192,7 @@ href="https://wa.me/5599984690434?text=Olá%20ASL%20Expresso!">
       Nenhuma poltrona selecionada
     </div>
 
-    <button class="asl-confirmar" onclick="confirmarReserva()">
+    <button type="button"class="asl-confirmar" onclick="confirmarReserva()">
       Confirmar reserva pelo WhatsApp
     </button>
 
@@ -1244,8 +1244,11 @@ function criarPoltronas(){
         botao.classList.add("ocupada");
         botao.disabled = true;
       }else{
-        botao.onclick = function(){
-          selecionarPoltrona(n,botao);
+botao.onclick = function(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    selecionarPoltrona(numero, botao);
+};
         };
       }
 
@@ -1255,7 +1258,7 @@ function criarPoltronas(){
 
     mapa.appendChild(fileira);
   }
-}
+
 
 function selecionarPoltrona(numero,botao){
 
