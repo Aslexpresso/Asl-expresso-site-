@@ -989,7 +989,7 @@ href="https://wa.me/5599984690434?text=Olá%20ASL%20Expresso!">
 
 💬
 
-</a<!-- ===== SISTEMA DE ESCOLHA DE POLTRONAS ASL EXPRESSO ===== -->
+</a><!-- ===== SISTEMA DE ESCOLHA DE POLTRONAS ASL EXPRESSO ===== -->
 
 <style>
 #aslReserva{
@@ -1248,90 +1248,18 @@ function criarPoltronas(){
       if(aslOcupadas.includes(n)){
         botao.classList.add("ocupada");
         botao.disabled = true;
-      }else{
-botao.onclick = function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    selecionarPoltrona(n, botao);
-};
+      } else {
+        botao.onclick = function(event){
+          event.preventDefault();
+          event.stopPropagation();
+          selecionarPoltrona(n, botao);
         };
       }
 
       fileira.appendChild(botao);
       numero++;
     }
-alert("TERMINOU A PRIMEIRA FILEIRA");
+
     mapa.appendChild(fileira);
   }
-
-
-function selecionarPoltrona(numero,botao){
-
-  document.querySelectorAll(".poltrona")
-    .forEach(p => p.classList.remove("selecionada"));
-
-  botao.classList.add("selecionada");
-
-  aslPoltrona = numero;
-
-  document.getElementById("aslPoltronaEscolhida").innerHTML =
-    "💺 Poltrona escolhida: <strong>" +
-    String(numero).padStart(2,"0") +
-    "</strong>";
 }
-
-function abrirReserva(){
-  document.getElementById("aslReserva").style.display="block";
-  document.body.style.overflow="hidden";
-  criarPoltronas();
-}
-
-function fecharReserva(){
-  document.getElementById("aslReserva").style.display="none";
-  document.body.style.overflow="";
-}
-
-function confirmarReserva(){
-
-  const nome = document.getElementById("aslNome").value.trim();
-  const cpf = document.getElementById("aslCpf").value.trim();
-  const telefone = document.getElementById("aslTelefone").value.trim();
-  const embarque = document.getElementById("aslEmbarque").value;
-
-  if(!nome || !cpf || !telefone || !embarque){
-    alert("Preencha todos os dados para continuar.");
-    return;
-  }
-
-  if(!aslPoltrona){
-    alert("Escolha sua poltrona.");
-    return;
-  }
-
-  const mensagem =
-`Olá, ASL Expresso! 🚌
-
-Quero solicitar minha reserva.
-
-👤 Passageiro: ${nome}
-🪪 CPF: ${cpf}
-📱 Telefone: ${telefone}
-📍 Embarque: ${embarque}
-💺 Poltrona: ${String(aslPoltrona).padStart(2,"0")}
-
-Aguardo a confirmação da minha reserva.`;
-
-  const url =
-    "https://wa.me/5599984690434?text=" +
-    encodeURIComponent(mensagem);
-
-  window.open(url,"_blank");
-}
-
-document.addEventListener("DOMContentLoaded", criarPoltronas);
-</script>
-
-<!-- ===== FIM SISTEMA DE POLTRONAS ===== -->>
-
-</body>
-</html>
